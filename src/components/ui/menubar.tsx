@@ -1,9 +1,11 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import * as MenubarPrimitive from "@radix-ui/react-menubar"
 import { Check, ChevronRight, Circle } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 function MenubarMenu({
@@ -43,7 +45,7 @@ const Menubar = React.forwardRef<
   <MenubarPrimitive.Root
     ref={ref}
     className={cn(
-      "flex h-10 items-center space-x-1 rounded-md border bg-background p-1",
+      "flex h-10 items-center justify-between rounded-md border bg-background p-1",
       className
     )}
     {...props}
@@ -236,6 +238,13 @@ const MenubarShortcut = ({
 }
 MenubarShortcut.displayname = "MenubarShortcut"
 
+const MenubarLoginButton = () => (
+  <Link href="/login">
+    <Button>Login</Button>
+  </Link>
+)
+MenubarLoginButton.displayName = "MenubarLoginButton"
+
 export {
   Menubar,
   MenubarMenu,
@@ -253,4 +262,5 @@ export {
   MenubarGroup,
   MenubarSub,
   MenubarShortcut,
+  MenubarLoginButton,
 }
