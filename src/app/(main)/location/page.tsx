@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Input } from '@/components/ui/input';
 import { getCurrentLocation, type Location } from '@/services/location';
 import { classifyTrash, type ClassifyTrashInput, type ClassifyTrashOutput } from '@/ai/flows/classify-trash';
-import { Camera, MapPin, Trash2, Package, Bot, Loader2 } from 'lucide-react';
+import { Camera, MapPin, Trash2, Package, Bot, Loader2, Map, BarChart2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import Image from 'next/image';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -148,10 +148,12 @@ export default function LocationPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 flex flex-col h-full">
+    <div className="container mx-auto p-4 flex flex-col h-full space-y-6">
       {/* Header */}
-      <header className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-primary">Log Trash</h1>
+      <header className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-primary flex items-center gap-2">
+           <MapPin className="h-8 w-8" /> Location &amp; Logs
+        </h1>
          <div className="flex items-center gap-2 text-sm text-foreground">
           {loadingLocation ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -168,7 +170,7 @@ export default function LocationPage() {
 
        {/* Location Error Display */}
       {error && !location && (
-         <Alert variant="destructive" className="mb-4">
+         <Alert variant="destructive">
               <AlertTitle>Location Error</AlertTitle>
               <AlertDescription>
                 {error} Please check your browser settings and ensure location permissions are granted for this site. Refresh the page after granting permissions.
@@ -176,15 +178,14 @@ export default function LocationPage() {
           </Alert>
       )}
 
-
       {/* Camera and Classification Section */}
-      <Card className="mb-6 shadow-md">
+      <Card className="shadow-md">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
              <Camera className="h-6 w-6 text-accent" />
-             Capture Trash
+             Log New Trash
           </CardTitle>
-          <CardDescription>Take or select a picture of the trash.</CardDescription>
+          <CardDescription>Take or select a picture to identify and log trash.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-4">
           {imagePreview ? (
@@ -223,7 +224,7 @@ export default function LocationPage() {
               ) : (
                 <Bot className="mr-2 h-5 w-5" />
               )}
-              Classify
+              Log Trash
             </Button>
           </div>
            {/* Error message specifically for classification failure */}
@@ -265,6 +266,43 @@ export default function LocationPage() {
                 </CardContent>
             </Card>
         )}
+
+      {/* Heatmap Section */}
+      <Card className="shadow-md">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+             <Map className="h-6 w-6 text-primary" /> Trash Heatmap
+          </CardTitle>
+          <CardDescription>Visualize trash concentration based on logged data.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-64 bg-muted rounded-md flex items-center justify-center text-muted-foreground">
+            Heatmap visualization coming soon! Requires logged data.
+          </div>
+           {/* Placeholder for map legends or controls */}
+        </CardContent>
+      </Card>
+
+       {/* Analytics Section */}
+       <Card className="shadow-md">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+             <BarChart2 className="h-6 w-6 text-primary" /> Insights & Analytics
+          </CardTitle>
+          <CardDescription>Analyze cleanup data and trends.</CardDescription>
+        </CardHeader>
+        <CardContent>
+           <p className="text-muted-foreground">
+            Data analysis features are under development. Requires logged data. Planned features include:
+          </p>
+           <ul className="list-disc list-inside mt-2 text-muted-foreground">
+             <li>Most common types of trash found.</li>
+             <li>Trends over time.</li>
+             <li>Impact of cleanup efforts.</li>
+             <li>Data export options.</li>
+           </ul>
+        </CardContent>
+      </Card>
     </div>
   );
 }

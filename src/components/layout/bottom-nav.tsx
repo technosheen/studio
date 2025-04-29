@@ -3,13 +3,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { MapPin, Users, Map, UserCircle } from 'lucide-react'; // UserCircle for profile
+import { MapPin, Users, UserCircle } from 'lucide-react'; // Removed Map, kept others
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: '/location', label: 'Location', icon: MapPin },
+  { href: '/location', label: 'Location', icon: MapPin }, // Renamed label to 'Location' (covers logging and map)
   { href: '/groups', label: 'Groups', icon: Users },
-  { href: '/heatmap', label: 'Heatmap', icon: Map },
+  // { href: '/heatmap', label: 'Heatmap', icon: Map }, // Removed Heatmap
   { href: '/profile', label: 'Profile', icon: UserCircle },
 ];
 
@@ -21,7 +21,8 @@ export default function BottomNav() {
       <div className="container mx-auto h-full">
         <ul className="flex justify-around items-center h-full">
           {navItems.map((item) => {
-            const isActive = pathname === item.href || (item.href !== '/location' && pathname.startsWith(item.href)); // Handle nested routes if any
+            // Adjust isActive logic if needed, especially for '/location'
+            const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
             const Icon = item.icon;
             return (
               <li key={item.href} className="flex-1 text-center">
