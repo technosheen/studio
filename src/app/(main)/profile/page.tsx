@@ -48,7 +48,7 @@ export default function ProfilePage() {
           if (userDocSnap.exists()) {
             const fetchedData = userDocSnap.data() as UserProfileData;
             setUserData(fetchedData);
-            setNewName(fetchedData.displayName || "");
+            setNewName(fetchedData.displayName ?? "");
           } else {
             // Firestore doc doesn't exist, create it
             console.log("No Firestore doc, creating...");
@@ -58,7 +58,7 @@ export default function ProfilePage() {
               displayName: currentUser.email?.split('@')[0] || 'User'
             };
             await setDoc(userDocRef, initialData);
-            setUserData(initialData);
+           setUserData(initialData);
             setNewName(initialData.displayName);
           }
         } catch (error) {
