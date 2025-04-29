@@ -1,7 +1,7 @@
-import type {Metadata} from 'next';
-import {Geist, Geist_Mono} from 'next/font/google';
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import { Toaster } from "@/components/ui/toaster"; // Import Toaster
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'BeachWise', // Updated title
-  description: 'Clean beaches, track trash, and organize cleanups with BeachWise.', // Updated description
+  title: 'BeachWise',
+  description: 'Clean beaches, track trash, and organize cleanups with BeachWise.',
 };
 
 export default function RootLayout({
@@ -26,10 +26,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <main className="min-h-screen flex flex-col">
-          {children}
-          <Toaster /> {/* Add Toaster component here */}
-        </main>
+        {children}
+        <Toaster />
       </body>
     </html>
   );

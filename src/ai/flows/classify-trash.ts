@@ -1,17 +1,16 @@
-// This file is machine-generated - do not edit!
-
 'use server';
 /**
- * @fileOverview Classifies trash found in an image.
+ * @fileOverview Classifies trash found in an image and associates it with a location.
  *
  * - classifyTrash - A function that classifies trash found in an image.
  * - ClassifyTrashInput - The input type for the classifyTrash function.
  * - ClassifyTrashOutput - The return type for the classifyTrash function.
  */
 
-import {ai} from '@/ai/ai-instance';
-import {z} from 'genkit';
+import { ai } from '@/ai/ai-instance';
+import { z } from 'genkit';
 
+// Input now includes optional location, but it's practically required by the UI flow.
 const ClassifyTrashInputSchema = z.object({
   photoDataUri: z
     .string()
@@ -21,10 +20,13 @@ const ClassifyTrashInputSchema = z.object({
 });
 export type ClassifyTrashInput = z.infer<typeof ClassifyTrashInputSchema>;
 
+// Output schema remains focused on classification result. Location is handled separately in the application logic.
 const ClassifyTrashOutputSchema = z.object({
-  trashType: z.string().describe('The type of trash found in the image.'),
+  trashType: z.string().describe('The type of trash found in the image (e.g., Plastic Bottle, Aluminum Can, Paper Scrap).'),
   confidence: z
     .number()
+    .min(0)
+    .max(1)
     .describe('The confidence level of the trash classification (0-1).'),
 });
 export type ClassifyTrashOutput = z.infer<typeof ClassifyTrashOutputSchema>;
@@ -45,18 +47,16 @@ const prompt = ai.definePrompt({
     }),
   },
   output: {
-    schema: z.object({
-      trashType: z.string().describe('The type of trash found in the image.'),
-      confidence: z
-        .number()
-        .describe('The confidence level of the trash classification (0-1).'),
-    }),
+    // Explicitly define the output schema for the AI model
+    schema: ClassifyTrashOutputSchema,
   },
-  prompt: `You are an expert in identifying trash on beaches.
+  prompt: `You are an expert in identifying and classifying common types of trash found on beaches.
 
-  Analyze the image and identify the type of trash in the image. Also, provide a confidence level (0-1) for your classification.
+  Analyze the provided image of trash found on a beach. Identify the primary type of trash visible in the image.
+  Provide the classification as a specific noun or short phrase (e.g., "Plastic Bottle", "Aluminum Can", "Fishing Net", "Paper Scrap", "Glass Fragment", "Cigarette Butt", "Food Wrapper").
+  Also, provide a confidence score between 0.0 and 1.0 indicating how certain you are about the classification.
 
-  Photo: {{media url=photoDataUri}}`,
+  Image of trash: {{media url=photoDataUri}}`,
 });
 
 const classifyTrashFlow = ai.defineFlow<
@@ -68,6 +68,18 @@ const classifyTrashFlow = ai.defineFlow<
   outputSchema: ClassifyTrashOutputSchema,
 },
 async input => {
-  const {output} = await prompt(input);
-  return output!;
+  // Call the prompt with only the photo data URI
+  const { output } = await prompt({ photoDataUri: input.photoDataUri });
+
+  if (!output) {
+    throw new Error('AI failed to produce an output for trash classification.');
+  }
+
+  // Ensure the output conforms to the schema, especially clamping confidence.
+  const confidence = Math.min(1, Math.max(0, output.confidence));
+
+  return {
+    trashType: output.trashType,
+    confidence: confidence,
+  };
 });
