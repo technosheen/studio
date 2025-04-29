@@ -37,6 +37,7 @@ export default function ProfilePage() {
       return; // Stop further execution in this effect run
     }
 
+
     // Fetch Firestore data only if currentUser exists
     if (currentUser) {
       const userDocRef = doc(db, "users", currentUser.uid);
@@ -67,9 +68,10 @@ export default function ProfilePage() {
         }
         setLoadingData(false);
       };
-
+      
       fetchData();
-    }\ else {
+    } else if(!currentUser && !authLoading) {
+      router.push('/login');
         // Handles the case where currentUser becomes null after initial load (e.g., token expired)
         setLoadingData(false); // Ensure loading state is updated
     }
